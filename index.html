@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Easter Egg with Egg.js</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/egg.js/1.0/egg.min.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      text-align: center;
+      padding: 50px;
+    }
+    #egggif {
+      display: none;
+      text-align: center;
+      margin-top: 20px;
+    }
+    #egggif img {
+      width: 300px;
+    }
+    #egggif h2 {
+      color: #333;
+    }
+  </style>
+</head>
+<body>
+  <h1 id="mainMessage">Tu t'es perdu ?</h1>
+  <div id="egggif">
+    <img src="https://media.giphy.com/media/l0ExvMqvV7MUtkBBe/giphy.gif" alt="Funny GIF">
+    <h2>🎉 You found the Easter Egg! 🎉</h2>
+  </div>
+  <audio id="easterEggSound" src="https://www.myinstants.com/media/sounds/you-found-bojuka_2.mp3"></audio>
+  <script>
+    var egg = new Egg();
+    egg
+      .addCode("up,up,down,down,left,right,left,right,b,a", function() {
+        document.getElementById('mainMessage').textContent = "Bien joué !";
+        document.getElementById('easterEggSound').play();
+        jQuery('#egggif').fadeIn(500, function() {
+          window.setTimeout(function() { jQuery('#egggif').fadeOut(); }, 5000);
+        });
+        confetti({
+          particleCount: 100,
+          spread: 70,
+          origin: { y: 0.6 }
+        });
+        let colors = ['#FF5733', '#33FF57', '#3357FF', '#FF33A1'];
+        let index = 0;
+        let colorChange = setInterval(function() {
+          document.body.style.backgroundColor = colors[index];
+          index = (index + 1) % colors.length;
+        }, 500);
+        setTimeout(function() {
+          clearInterval(colorChange);
+          document.body.style.backgroundColor = '';
+        }, 5000);
+      })
+      .addHook(function(){
+        console.log("Hook called for: " + this.activeEgg.keys);
+        console.log(this.activeEgg.metadata);
+      })
+      .listen();
+  </script>
+</body>
+</html>
